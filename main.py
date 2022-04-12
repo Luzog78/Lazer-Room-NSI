@@ -1,3 +1,6 @@
+import json
+import os
+import random
 import sys
 import time
 import tkinter as tk
@@ -37,7 +40,7 @@ class Theme:
 
     @staticmethod
     def DARK():
-        return Theme("black", "white", "green", "red", "green", "navy", "white", ("Arial", 60, "bold underline"),
+        return Theme("black", "white", "green", "red", "lime", "gold", "white", ("Arial", 60, "bold underline"),
                      ("Consolas", 20, "bold"), ("Consolas", 72), ("MS Serif", 72), ("Arial", 20, "bold underline"),
                      ("Arial", 15, "bold"), ("Arial", 15), ("Roboto", 12), ("Roboto", 12, "bold"), ("Consolas", 12))
 
@@ -99,23 +102,60 @@ class GameHandler(tk.Tk):
         self.top_2__lbl = tk.Label(self.best_scores_frame, **params, text="2.")
         self.top_2__lbl.grid(row=1, column=0)
         self.top_3__lbl = tk.Label(self.best_scores_frame, **params, text="3.")
-        self.top_3__lbl.grid(row=1, column=2)
+        self.top_3__lbl.grid(row=1, column=3)
         self.top_4__lbl = tk.Label(self.best_scores_frame, **params, text="4.")
         self.top_4__lbl.grid(row=2, column=0)
         self.top_5__lbl = tk.Label(self.best_scores_frame, **params, text="5.")
-        self.top_5__lbl.grid(row=2, column=2)
+        self.top_5__lbl.grid(row=2, column=3)
+
+        # def get_top(__top: list[str, int] | tuple[str, int], __max_len: int = 15, __completer: str = " "):
+        #     total = str(__top[1])
+        #     length = __max_len - len(total) - 1
+        #     name = str(__top[0])[:length - 1]
+        #     spaces = length - len(name)
+        #     return {'name': name, 'total': "|" + total, 'space': spaces * str(__completer)}
+        #
+        # self.top_1_lbl = tk.Label(self.best_scores_frame, **(params | {"anchor": "center", "width": 35}),
+        #                           text="{name}{space}{total}".format(**get_top(top[0], 37)) if len(top) else "")
+        # self.top_1_lbl.grid(row=0, column=1, columnspan=3, pady=10)
+        # self.top_2_lbl = tk.Label(self.best_scores_frame, **params,
+        #                           text="{name}{space}{total}".format(**get_top(top[1])) if len(top) >= 2 else "")
+        # self.top_2_lbl.grid(row=1, column=1, pady=3)
+        # self.top_3_lbl = tk.Label(self.best_scores_frame, **params,
+        #                           text="{name}{space}{total}".format(**get_top(top[2])) if len(top) >= 3 else "")
+        # self.top_3_lbl.grid(row=1, column=3, pady=3)
+        # self.top_4_lbl = tk.Label(self.best_scores_frame, **params,
+        #                           text="{name}{space}{total}".format(**get_top(top[3])) if len(top) >= 4 else "")
+        # self.top_4_lbl.grid(row=2, column=1, pady=3)
+        # self.top_5_lbl = tk.Label(self.best_scores_frame, **params,
+        #                           text="{name}{space}{total}".format(**get_top(top[4])) if len(top) >= 5 else "")
+        # self.top_5_lbl.grid(row=2, column=3, pady=3)
+
         params = {"bg": self.theme.bg, "fg": self.theme.fg, "font": self.theme.normal_mono_font, "width": 10,
-                  "anchor": "w", "padx": 10}
-        self.top_1_lbl = tk.Label(self.best_scores_frame, **(params | {"anchor": "center"}), text="Marc")
-        self.top_1_lbl.grid(row=0, column=1, columnspan=3, pady=10)
-        self.top_2_lbl = tk.Label(self.best_scores_frame, **params, text="Jean")
-        self.top_2_lbl.grid(row=1, column=1, pady=3)
-        self.top_3_lbl = tk.Label(self.best_scores_frame, **params, text="Paul")
-        self.top_3_lbl.grid(row=1, column=3, pady=3)
-        self.top_4_lbl = tk.Label(self.best_scores_frame, **params, text="Jacques")
-        self.top_4_lbl.grid(row=2, column=1, pady=3)
-        self.top_5_lbl = tk.Label(self.best_scores_frame, **params, text="Hadrien")
-        self.top_5_lbl.grid(row=2, column=3, pady=3)
+                  "anchor": "w", "padx": 6}
+        self.top_1_name_lbl = tk.Label(self.best_scores_frame, **(params | {"anchor": "center", "width": params["width"] * 2 + 4}))
+        self.top_1_name_lbl.grid(row=0, column=1, columnspan=4, pady=10)
+        self.top_2_name_lbl = tk.Label(self.best_scores_frame, **params)
+        self.top_2_name_lbl.grid(row=1, column=1, pady=3)
+        self.top_3_name_lbl = tk.Label(self.best_scores_frame, **params)
+        self.top_3_name_lbl.grid(row=1, column=4, pady=3)
+        self.top_4_name_lbl = tk.Label(self.best_scores_frame, **params)
+        self.top_4_name_lbl.grid(row=2, column=1, pady=3)
+        self.top_5_name_lbl = tk.Label(self.best_scores_frame, **params)
+        self.top_5_name_lbl.grid(row=2, column=4, pady=3)
+
+        params = {"bg": self.theme.bg, "font": self.theme.normal_mono_font, "width": 5,
+                  "anchor": "e", "padx": 6}
+        self.top_1_chrono_lbl = tk.Label(self.best_scores_frame, **params)
+        self.top_1_chrono_lbl.grid(row=0, column=5, pady=10)
+        self.top_2_chrono_lbl = tk.Label(self.best_scores_frame, **params)
+        self.top_2_chrono_lbl.grid(row=1, column=2, pady=3)
+        self.top_3_chrono_lbl = tk.Label(self.best_scores_frame, **params)
+        self.top_3_chrono_lbl.grid(row=1, column=5, pady=3)
+        self.top_4_chrono_lbl = tk.Label(self.best_scores_frame, **params)
+        self.top_4_chrono_lbl.grid(row=2, column=2, pady=3)
+        self.top_5_chrono_lbl = tk.Label(self.best_scores_frame, **params)
+        self.top_5_chrono_lbl.grid(row=2, column=5, pady=3)
 
         tk.Frame(self, bg=self.theme.bg).pack(side="bottom", pady=10)
         self.opt_frame = tk.Frame(self, bg=self.theme.bg)
@@ -138,7 +178,7 @@ class GameHandler(tk.Tk):
         self.right_frame = tk.Frame(self, bg=self.theme.bg)
         self.right_frame.place(relx=0.6, y=self.theme.title_font[1] * 1.6 + 30, anchor="nw")
         self.chrono_board_frame = tk.Frame(self.right_frame, bg=self.theme.bg)
-        self.chrono_board_frame.pack()
+        self.chrono_board_frame.pack(fill="y", expand=True, anchor="w")
         t = tk.Label(self.chrono_board_frame, bg=self.theme.bg, fg=self.theme.fg, text="Actions :",
                      font=self.theme.board_title_font)
         t.grid(row=0, column=0, columnspan=2, sticky="w")
@@ -150,12 +190,22 @@ class GameHandler(tk.Tk):
         for i, (k, v) in enumerate(self.chrono_board):
             k.grid(row=2 * i + 2, column=0, padx=15, pady=5, sticky="w")
             v.grid(row=2 * i + 2, column=1, padx=15, pady=5, sticky="w")
+        self.name_frame = tk.Frame(self.right_frame, bg=self.theme.bg)
+        self.name_frame.pack(fill="y", expand=True, anchor="w", pady=15)
+        self.name_label = tk.Label(self.name_frame, bg=self.theme.bg, fg=self.theme.fg,
+                                   font=self.theme.board_key_font, text="Peudo :")
+        self.name_label.pack(side="left")
+        self.name_entry = tk.Entry(self.name_frame, bg=self.theme.bg, fg=self.theme.fg,
+                                   font=self.theme.normal_mono_font)
+        self.name_entry.pack(side="left", padx=5)
+
+        self.update_top()
 
         self.protocol("WM_DELETE_WINDOW", self.exit)
 
     def start(self):
         self.running, self.playing = True, True
-        self.chrono = self.GAME_CHRONO
+        self.chrono = self.GAME_CHRONO + 0.1
         self.chronos = [None for _ in self.buttons]
         if not self.thread_handler.is_alive():
             self.thread_handler.start()
@@ -163,6 +213,7 @@ class GameHandler(tk.Tk):
             self.thread_chrono.start()
         self.GPIO_setup()
         self.init()
+        self.playing = False
         self.mainloop()
 
     def pause(self):
@@ -218,6 +269,38 @@ class GameHandler(tk.Tk):
 
         self.update()
 
+    def update_top(self):
+        try:
+            with open("data/scoreboard.json", "r") as f:
+                sets = list(json.loads(f.read())["sets"])
+        except Exception:
+            sets = []
+        top = [(s["name"], s["total"], True) for s in sorted(sets, key=lambda item: item["total"]) if s["win"]] \
+            + [(s["name"], s["total"], False) for s in sorted(sets, key=lambda item: item["total"]) if not s["win"]]
+        for i, (n, t, w) in enumerate(top[:]):
+            if n is None:
+                top[i] = ("null", t, w)
+
+        def names(__index):
+            return {"text": top[__index][0] if len(top) > __index else ""}
+
+        def chronos(__index):
+            return {"fg": (self.theme.better_color if top[__index][2] else self.theme.loose_color)
+                    if len(top) > __index else self.theme.fg, "text": str(round(float(top[__index][1]), 1))
+                    if len(top) > __index else ""}
+
+        self.top_1_name_lbl.config(**names(0))
+        self.top_2_name_lbl.config(**names(1))
+        self.top_3_name_lbl.config(**names(2))
+        self.top_4_name_lbl.config(**names(3))
+        self.top_5_name_lbl.config(**names(4))
+
+        self.top_1_chrono_lbl.config(**chronos(0))
+        self.top_2_chrono_lbl.config(**chronos(1))
+        self.top_3_chrono_lbl.config(**chronos(2))
+        self.top_4_chrono_lbl.config(**chronos(3))
+        self.top_5_chrono_lbl.config(**chronos(4))
+
     def end(self, win: bool = False):
         self.pause()
         self.set(self.indicators, False)
@@ -231,6 +314,45 @@ class GameHandler(tk.Tk):
         self.chrono_board[-1][0].grid(row=2 * len(self.buttons) + 3, column=0, padx=15, pady=10, sticky="w")
         self.chrono_board[-1][1].grid(row=2 * len(self.buttons) + 3, column=1, padx=15, pady=10, sticky="w")
         self.update()
+
+        try:
+            os.mkdir("data")
+        except Exception:
+            pass
+        if "scoreboard.json" not in os.listdir("data"):
+            open("data/scoreboard.json", "w").close()
+            base = {}
+        else:
+            with open("data/scoreboard.json", "r") as f:
+                try:
+                    base = json.loads(f.read())
+                    if isinstance(base, list):
+                        base = {"unknown": base}
+                except json.decoder.JSONDecodeError:
+                    base = {}
+
+        if "sets" not in list(base.keys()):
+            base["sets"] = []
+
+        name = self.name_entry.get()
+
+        if not name and not win and [True for c in self.chronos if c is not None]:
+            self.update_top()
+            return
+
+        if not name:
+            name = None
+
+        base["sets"].append({"id": random.randint(-9999999999999999, 9999999999999999),
+                             "name": name,
+                             "win": win,
+                             "total": float(round(sum(c for c in self.chronos if c is not None), 1)),
+                             "chronos": self.chronos})
+
+        with open("data/scoreboard.json", "w") as f:
+            f.write(json.dumps(base, indent=2))
+
+        self.update_top()
 
     def target_handler(self):
         while self.running:
